@@ -58,7 +58,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
                     <Navbar
                       setApiKey={setApiKey}
                       onOpen={onOpen}
-                      logoText={'Aureus AI UI Dashboard PRO'}
+                      logoText={'Horizon UI Dashboard PRO'}
                       brandText={getActiveRoute(routes, pathname)}
                       secondary={getActiveNavbar(routes, pathname)}
                     />
