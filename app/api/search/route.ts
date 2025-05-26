@@ -1,18 +1,21 @@
+import { NextRequest, NextResponse } from 'next/server';
 
-import { NextRequest } from 'next/server';
+export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
-  const { query } = await req.json();
+  const body = await req.json();
+  const query = body.query;
 
-  const apiKey = 'AIzaSyChzzeyqzvu6UoqAXgxZ-uV7zPUY8Pi00o';
-  const cx = '9508686f6520a4284';
+  const apiKey = process.env.GOOGLE_API_KEY!;
+  const cx = process.env.GOOGLE_CX!;
 
   const url = `https://www.googleapis.com/customsearch/v1?q=${encodeURIComponent(query)}&key=${apiKey}&cx=${cx}`;
 
-  const res = await fetch(url);
-  const data = await res.json();
-
-  return new Response(JSON.stringify(data), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return NextResponse.json(data);
+  } catch (error) {
+    return NextResponse.json({ error: 'Failed to fetch from Google Search API', details: error }, { status: 500 });
+  }
 }
