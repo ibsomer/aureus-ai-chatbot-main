@@ -1,11 +1,10 @@
+
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
-  const messages = body.messages;
-
   const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -14,14 +13,13 @@ export async function POST(req: NextRequest) {
     },
     body: JSON.stringify({
       model: 'llama3-8b-8192',
-      messages,
-      stream: true,
+      messages: body.messages,
+      stream: false
     }),
   });
 
-  return new Response(response.body, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-    },
+  const result = await response.json();
+  return new Response(JSON.stringify(result), {
+    headers: { 'Content-Type': 'application/json' },
   });
 }
